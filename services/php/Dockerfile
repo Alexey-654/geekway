@@ -38,6 +38,7 @@ RUN pecl install xdebug && \
     apt update && \
     apt install -y symfony-cli
 
+RUN ln -s $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
 COPY symfony-dev.ini $PHP_INI_DIR/conf.d/
 COPY symfony-dev.ini $PHP_INI_DIR/cli/conf.d/
 COPY xdebug.ini $PHP_INI_DIR/conf.d/
@@ -45,3 +46,4 @@ COPY xdebug.ini $PHP_INI_DIR/cli/conf.d/
 USER php-geek
 
 FROM base as prod
+RUN ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini

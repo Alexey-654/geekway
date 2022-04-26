@@ -19,6 +19,7 @@ services:
             target: dev
         volumes:
             - .:/geekway
+            - bash_history:/home/php-geek
         environment:
             - PHP_IDE_CONFIG="serverName=geekway"
         extra_hosts:
@@ -42,3 +43,7 @@ networks:
     outside:
         external: true
         name: nginx-proxy
+
+volumes:
+    bash_history:
+        external: true
