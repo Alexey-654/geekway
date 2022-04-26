@@ -1,0 +1,44 @@
+version: '3.7'
+services:
+    db:
+        container_name: db-geekway
+        image: postgres:14
+        ports:
+            - "5400:5432"
+        environment:
+            POSTGRES_DB: geekway
+            POSTGRES_PASSWORD: 1234
+            POSTGRES_USER: alex
+        volumes:
+            - ./db:/var/lib/postgresql/data:rw
+
+    php:
+        container_name: php-geekway
+        build:
+            context: ./services/php
+            target: dev
+        volumes:
+            - .:/geekway
+        environment:
+            - PHP_IDE_CONFIG="serverName=geekway"
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        depends_on:
+            - db
+
+    nginx:
+        container_name: nginx-geekway
+        build: 
+            context: ./services/nginx
+#        ports:
+#            - "80:80"
+#            - "443:443"
+        networks:
+            - outside
+        depends_on:
+            - php
+
+networks:
+    outside:
+        external: true
+        name: nginx-proxy
