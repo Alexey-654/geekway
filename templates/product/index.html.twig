@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Интернет Магазин Главная{% endblock %}
+
+{% block body %}
+
+    <div class="d-flex justify-content-start flex-wrap">
+        {% for product in paginator.results %}
+            <div class="card m-2" style="width: 18rem;">
+                <img src="/{{ product.imagePaths[0] }}" class="card-img-top p-2" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p>{{ product.price }} ₽</p>
+                    <a href="#" class="btn btn-primary">В корзину</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {{ include('_grid_parts/_pagination.html.twig') }}
+
+{% endblock %}

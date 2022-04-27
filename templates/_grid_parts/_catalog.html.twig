@@ -1,0 +1,37 @@
+<div class="flex-shrink-0 p-3 bg-white m-2" style="width: 280px;">
+    <ul class="list-unstyled ps-0">
+        <li class="mb-1">
+            <button class="btn btn-toggle align-items-center rounded" data-bs-toggle="collapse"
+                    data-bs-target="#cat-collapse" aria-expanded="true">
+                Категории
+            </button>
+            <div class="collapse show" id="cat-collapse" style="">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    {% for category in categories %}
+                        <li>
+                            <a class="link-dark rounded" href="/catalog/{{ category.slug }}">{{ category.name }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </li>
+    </ul>
+
+    <ul class="list-unstyled ps-0">
+        <li class="mb-1">
+            <button class="btn btn-toggle align-items-center rounded" data-bs-toggle="collapse"
+                    data-bs-target="#tag-collapse" aria-expanded="true">
+                Теги
+            </button>
+            <div class="collapse show" id="tag-collapse" style="">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    {% for category in categories %}
+                        <li>
+                            <a class="link-dark rounded" href="/catalog/{{ category.slug }}">{{ category.name }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </li>
+    </ul>
+</div>
