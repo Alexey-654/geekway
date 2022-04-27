@@ -27,6 +27,9 @@ RUN docker-php-ext-configure intl && \
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
+RUN apt-get update && apt-get install -y nodejs npm; \
+    npm install --global yarn
+
 RUN groupadd -g 1000 php-geek && \
     useradd --uid 1000 --gid php-geek --groups www-data --shell /bin/bash --create-home php-geek
 
