@@ -5,6 +5,8 @@ services:
         image: postgres:14
         ports:
             - "5400:5432"
+        networks:
+            - default
         environment:
             POSTGRES_DB: geekway
             POSTGRES_PASSWORD: 1234
@@ -20,6 +22,8 @@ services:
         volumes:
             - .:/geekway
             - bash_history:/home/php-geek
+        networks:
+            - default
         environment:
             - PHP_IDE_CONFIG="serverName=geekway"
         extra_hosts:
@@ -31,13 +35,18 @@ services:
         container_name: nginx-geekway
         build: 
             context: ./services/nginx
+        volumes:
+            - .:/geekway
 #        ports:
 #            - "80:80"
 #            - "443:443"
         networks:
+            - default
             - outside
         depends_on:
             - php
+        environment:
+            - VIRTUAL_HOST=geekway.local
 
 networks:
     outside:
