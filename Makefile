@@ -6,3 +6,8 @@ bash:
 
 #fixture
 #php bin/console doctrine:fixtures:load
+
+#encore
+#npm install
+#npm run watch
+#npm run build
