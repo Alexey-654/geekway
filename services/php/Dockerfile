@@ -1,28 +1,22 @@
 FROM php:8.1-fpm as base
-RUN apt-get update && \
-    apt-get install -y \
+RUN apt-get update && apt-get install -y \
     acl \
     openssl \
-    libzip-dev \
-    unzip \
     libpq-dev \
-    libcurl3-dev \
     libicu-dev \
     libpng-dev \
     libwebp-dev \
-    libjpeg-dev libjpeg62-turbo-dev \
-    libxpm-dev \
-    libfreetype6-dev
+    libjpeg-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev; \
+    rm -rf /var/lib/apt/lists/*
 RUN docker-php-ext-configure intl && \
     docker-php-ext-configure gd \
     --with-webp \
     --with-jpeg \
-    --with-xpm \
     --with-freetype \
     --enable-gd && \
-    docker-php-ext-install zip pdo pdo_pgsql opcache curl gd exif intl pgsql && \
-    pecl install apcu ds && \
-    docker-php-ext-enable apcu ds
+    docker-php-ext-install exif gd intl opcache pdo_pgsql pgsql
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
@@ -36,8 +30,7 @@ WORKDIR /geekway
 FROM base as dev
 RUN pecl install xdebug && \
     echo 'deb [trusted=yes] https://repo.symfony.com/apt/ /' | tee /etc/apt/sources.list.d/symfony-cli.list && \
-    apt update && \
-    apt install -y symfony-cli
+    apt update && apt install -y symfony-cli
 
 RUN ln -s $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
 COPY symfony-dev.ini $PHP_INI_DIR/conf.d/
