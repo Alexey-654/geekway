@@ -22,22 +22,14 @@ class ProductRepository extends ServiceEntityRepository
 
     public function findLatest(int $page = 1, ?string $categorySlug = null): Paginator
     {
-
-        $qb = $this->createQueryBuilder('p')
-            ->innerJoin('p.author', 'a');
-
+        $qb = $this->createQueryBuilder('p');
         if (null !== $categorySlug) {
-            $qb->andWhere(':tag MEMBER OF p.tags')
-                ->setParameter('tag', $tag);
+            $qb->addSelect('c')
+                ->innerJoin('p.category', 'c')
+                ->where('c.slug = :slug')
+                ->setParameter('slug', $categorySlug);
         }
-//        $qb = $this->createQueryBuilder('p')
-//            ->addSelect('a', 't')
-//            ->innerJoin('p.author', 'a')
-//            ->leftJoin('p.tags', 't')
-//            ->where('p.publishedAt <= :now')
-//            ->orderBy('p.publishedAt', 'DESC')
-//            ->setParameter('now', new \DateTime())
-
+        $qb->orderBy('p.updatedAt', 'ASC');
         return (new Paginator($qb))->paginate($page);
     }
 

@@ -25,7 +25,7 @@ services:
         networks:
             - default
         environment:
-            - PHP_IDE_CONFIG="serverName=geekway"
+            - "PHP_IDE_CONFIG=serverName=geekway"
         extra_hosts:
             - "host.docker.internal:host-gateway"
         depends_on:

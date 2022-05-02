@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Category;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -59,9 +60,21 @@ class Product
     private $slug;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category")
      */
-    private $categoryId;
+    private $category;
+
+    /**
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime", name="created_at")
+     */
+    protected $createdAt;
+
+    /**
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime", name="updated_at")
+     */
+    protected $updatedAt;
 
     public function getId(): ?int
     {
@@ -150,15 +163,26 @@ class Product
         return $this->slug;
     }
 
-    public function getCategoryId(): ?int
+    public function getCategory(): ?int
     {
-        return $this->categoryId;
+        return $this->category;
     }
 
-    public function setCategoryId(int $categoryId): self
+    public function setCategory(Category $category): self
     {
-        $this->categoryId = $categoryId;
+        $this->category = $category;
 
         return $this;
     }
+
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
+
+    public function getUpdatedAt(): \DateTime
+    {
+        return $this->updatedAt;
+    }
+
 }
