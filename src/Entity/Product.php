@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Entity\Category;
 use App\Repository\ProductRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -65,6 +67,15 @@ class Product
     private $category;
 
     /**
+     * @var Tag[]|Collection
+     *
+     * @ORM\ManyToMany(targetEntity="App\Entity\Tag", cascade={"persist"})
+     * @ORM\JoinTable(name="product_tag")
+     * @ORM\OrderBy({"name": "ASC"})
+     */
+    private $tags;
+
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime", name="created_at")
      */
@@ -75,6 +86,11 @@ class Product
      * @ORM\Column(type="datetime", name="updated_at")
      */
     protected $updatedAt;
+
+    public function __construct()
+    {
+        $this->tags = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -173,6 +189,25 @@ class Product
         $this->category = $category;
 
         return $this;
+    }
+
+    public function addTag(Tag ...$tags): void
+    {
+        foreach ($tags as $tag) {
+            if (!$this->tags->contains($tag)) {
+                $this->tags->add($tag);
+            }
+        }
+    }
+
+    public function removeTag(Tag $tag): void
+    {
+        $this->tags->removeElement($tag);
+    }
+
+    public function getTags(): Collection
+    {
+        return $this->tags;
     }
 
     public function getCreatedAt(): \DateTime

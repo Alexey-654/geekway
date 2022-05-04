@@ -1,13 +1,13 @@
-bash:
-	docker exec -t -i php-geekway /bin/bash
 t:
 	docker exec -t -i php-geekway /bin/bash
 
-#migration
-#php bin/console d:m:m
-
-#fixture
-#php bin/console doctrine:fixtures:load
+#db
+# php bin/console d:m:m
+#
+# php bin/console doctrine:schema:drop --force
+# php bin/console doctrine:schema:create
+#
+# php bin/console doctrine:fixtures:load
 
 #encore
 #npm install
