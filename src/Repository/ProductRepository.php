@@ -20,7 +20,7 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-    public function findLatest(int $page = 1, ?string $categorySlug = null): Paginator
+    public function findByCategory(int $page = 1, ?string $categorySlug = null): Paginator
     {
         $qb = $this->createQueryBuilder('p');
         if (null !== $categorySlug) {
@@ -33,9 +33,20 @@ class ProductRepository extends ServiceEntityRepository
         return (new Paginator($qb))->paginate($page);
     }
 
-    // /**
-    //  * @return Product[] Returns an array of Product objects
-    //  */
+    public function findByTag(int $page = 1, string $tagSlug = null): Paginator
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->addSelect('c')
+            ->innerJoin('p.category', 'c')
+            ->where('c.slug = :slug')
+            ->setParameter('slug', $tagSlug);
+        return (new Paginator($qb))->paginate($page);
+
+    }
+
+// /**
+//  * @return Product[] Returns an array of Product objects
+//  */
     /*
     public function findByExampleField($value)
     {

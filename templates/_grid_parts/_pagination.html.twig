@@ -4,7 +4,7 @@
             {% if paginator.hasPreviousPage %}
                 <li class="page-item prev">
                     <a class="page-link"
-                       href="{{ path('catalog_index_paginated', {page: paginator.previousPage, categorySlug: categorySlug}) }}"
+                       href="{{ path(routeName, {page: paginator.previousPage, categorySlug: categorySlug}) }}"
                        rel="previous">&laquo;
                     </a>
                 </li>
@@ -22,7 +22,7 @@
                 {% else %}
                     <li class="page-item">
                         <a class="page-link"
-                           href="{{ path('catalog_index_paginated', {page: i, categorySlug: categorySlug}) }}">{{ i }}
+                           href="{{ path(routeName, {page: i, categorySlug: categorySlug}) }}">{{ i }}
                         </a>
                     </li>
                 {% endif %}
@@ -31,7 +31,7 @@
             {% if paginator.hasNextPage %}
                 <li class="page-item next">
                     <a class="page-link"
-                       href="{{ path('catalog_index_paginated', {page: paginator.nextPage, categorySlug: categorySlug}) }}"
+                       href="{{ path(routeName, {page: paginator.nextPage, categorySlug: categorySlug}) }}"
                        rel="next">&raquo;
                     </a>
                 </li>

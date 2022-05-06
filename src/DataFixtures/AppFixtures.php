@@ -56,13 +56,13 @@ class AppFixtures extends Fixture
             $categories = $manager->getRepository(Category::class)->findAll();
             $tags = $manager->getRepository(Tag::class)->findAll();
             $product->setName($this->faker->sentence())
-                ->setCategory($categories[$this->faker->numberBetween(0, 4)])
+                ->setCategory($categories[array_rand($categories)])
                 ->setSkuNumber($this->faker->numerify('######'))
                 ->setDescription($this->faker->text(300))
                 ->setPrice($this->faker->randomNumber(4))
                 ->setStock($this->faker->randomNumber(5))
                 ->setImagePaths(['img/d.png'])
-                ->addTag($tags[$this->faker->numberBetween(0, 4)]);
+                ->addTag($tags[array_rand($tags)]);
             $manager->persist($product);
         }
 

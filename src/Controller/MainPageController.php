@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Entity\Product;
+use App\Entity\Tag;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,11 +17,13 @@ class MainPageController extends AbstractController
     {
         $products = $doctrine->getRepository(Product::class)->findAll();
         $categories = $doctrine->getRepository(Category::class)->findAll();
+        $tags = $doctrine->getRepository(Tag::class)->findAll();
 
         return $this->render('main_page/index.html.twig', [
             'controller_name' => 'MainPageController',
             'products' => $products,
             'categories' => $categories,
+            'tags' => $tags,
         ]);
     }
 }
