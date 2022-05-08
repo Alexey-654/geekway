@@ -7,7 +7,8 @@
             </button>
             <div class="collapse show" id="cat-collapse" style="">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    {% for category in categories %}
+
+                    {% for category in categories.findAll() %}
                         <li>
                             <a class="link-dark rounded" href="/catalog/{{ category.slug }}">{{ category.name }}</a>
                         </li>
@@ -21,11 +22,11 @@
         <li class="mb-1">
             <button class="btn btn-toggle align-items-center rounded" data-bs-toggle="collapse"
                     data-bs-target="#tag-collapse" aria-expanded="true">
-                Направления
+                По интересам
             </button>
             <div class="collapse show" id="tag-collapse" style="">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    {% for tag in tags %}
+                    {% for tag in tags.findAll() %}
                         <li>
                             <a class="link-dark rounded" href="/catalog/tag/{{ tag.slug }}">{{ tag.name }}</a>
                         </li>

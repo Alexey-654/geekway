@@ -12,35 +12,22 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class ProductController extends AbstractController
 {
-    #[Route('/product/{categorySlug}', name: 'product', defaults: ['page' => '1'], methods: ['GET', 'HEAD'])]
-    #[Route('/product/{page}', name: 'product_index_paginated', requirements: ['page' => '\d+'], defaults: ['page' => '1'])]
-    public function index(ManagerRegistry $doctrine, $categorySlug, $page): Response
+    #[Route('/product/{slug}', name: 'product_show')]
+    public function show(ManagerRegistry $doctrine, string $slug): Response
     {
-        $products = $doctrine
+        $product = $doctrine
             ->getRepository(Product::class)
-            ->findLatest($page, $categorySlug);
-
-        $categories = $doctrine->getRepository(Category::class)->findAll();
-
-        return $this->render('product/index.html.twig', [
-            'paginator' => $products,
-            'categories' => $categories,
-        ]);
-    }
-
-    #[Route('/product/{id}', name: 'product_show')]
-    public function show(int $id): Response
-    {
-        $product = $this->getDoctrine()
-            ->getRepository(Product::class)
-            ->find($id);
+            ->findOneBy(['slug' => $slug]);
 
         if (!$product) {
             throw $this->createNotFoundException(
-                'No product found for id '.$id
+                'No product found for name ' . $slug
             );
         }
 
-        return new Response('Check out this great product: '.$product->getName());
+        return $this->render('product/show.html.twig', [
+            'product' => $product,
+        ]);
     }
+
 }

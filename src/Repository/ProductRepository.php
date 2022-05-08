@@ -30,18 +30,19 @@ class ProductRepository extends ServiceEntityRepository
                 ->setParameter('slug', $categorySlug);
         }
         $qb->orderBy('p.updatedAt', 'ASC');
+
         return (new Paginator($qb))->paginate($page);
     }
 
     public function findByTag(int $page = 1, string $tagSlug = null): Paginator
     {
         $qb = $this->createQueryBuilder('p')
-            ->addSelect('c')
-            ->innerJoin('p.category', 'c')
-            ->where('c.slug = :slug')
+            ->addSelect('t')
+            ->innerJoin('p.tags', 't')
+            ->where('t.slug = :slug')
             ->setParameter('slug', $tagSlug);
-        return (new Paginator($qb))->paginate($page);
 
+        return (new Paginator($qb))->paginate($page);
     }
 
 // /**

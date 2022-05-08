@@ -13,40 +13,30 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class CatalogController extends AbstractController
 {
-    #[Route('/catalog/{categorySlug}', name: 'catalog_category', defaults: ['page' => '1'])]
-    #[Route('/catalog/{categorySlug}/{page}', name: 'catalog_category_paginated', requirements: ['page' => '\d+'], defaults: ['page' => '1'])]
-    public function showByCategory(ManagerRegistry $doctrine, $categorySlug, $page, string $_route): Response
+    #[Route('/catalog/{slug}/{page}', name: 'catalog_category_paginated', requirements: ['page' => '\d+'], defaults: ['page' => '1'])]
+    public function showByCategory(ManagerRegistry $doctrine, string $slug, int $page, string $_route): Response
     {
         $products = $doctrine
             ->getRepository(Product::class)
-            ->findByCategory($page, $categorySlug);
-        $categories = $doctrine->getRepository(Category::class)->findAll();
-        $tags = $doctrine->getRepository(Tag::class)->findAll();
+            ->findByCategory($page, $slug);
 
         return $this->render('catalog/index.html.twig', [
             'paginator' => $products,
-            'categories' => $categories,
-            'categorySlug' => $categorySlug,
-            'tags' => $tags,
+            'slug' => $slug,
             'routeName' => $_route
         ]);
     }
 
-    #[Route('/catalog/tag/{tagSlug}', name: 'catalog_tag', defaults: ['page' => '1'])]
-    #[Route('/catalog/tag/{tagSlug}/{page}', name: 'catalog_tag_paginated', requirements: ['page' => '\d+'], defaults: ['page' => '1'])]
-    public function showByTag(ManagerRegistry $doctrine, $tagSlug, $page, string $_route): Response
+    #[Route('/catalog/tag/{slug}/{page}', name: 'catalog_tag_paginated', requirements: ['page' => '\d+'], defaults: ['page' => '1'])]
+    public function showByTag(ManagerRegistry $doctrine, string $slug, int $page, string $_route): Response
     {
         $products = $doctrine
             ->getRepository(Product::class)
-            ->findByTag($page, $tagSlug);
-        $categories = $doctrine->getRepository(Category::class)->findAll();
-        $tags = $doctrine->getRepository(Tag::class)->findAll();
+            ->findByTag($page, $slug);
 
         return $this->render('catalog/index.html.twig', [
             'paginator' => $products,
-            'categories' => $categories,
-            'categorySlug' => $tagSlug,
-            'tags' => $tags,
+            'slug' => $slug,
             'routeName' => $_route,
         ]);
     }

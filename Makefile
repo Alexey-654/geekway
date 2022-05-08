@@ -9,6 +9,9 @@ t:
 #
 # php bin/console doctrine:fixtures:load
 
+#debug
+# php bin/console debug:autowiring --all
+
 #encore
 #npm install
 #npm run watch

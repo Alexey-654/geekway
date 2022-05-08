@@ -34,6 +34,11 @@ class Category
     private $slug;
 
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $parent;
+
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime", name="created_at")
      */
@@ -82,5 +87,17 @@ class Category
     public function getUpdatedAt(): \DateTime
     {
         return $this->updatedAt;
+    }
+
+    public function getParent(): ?int
+    {
+        return $this->parent;
+    }
+
+    public function setParent(?int $parent): self
+    {
+        $this->parent = $parent;
+
+        return $this;
     }
 }

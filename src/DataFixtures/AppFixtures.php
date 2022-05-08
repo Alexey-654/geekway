@@ -27,10 +27,17 @@ class AppFixtures extends Fixture
 
     private function loadCategory(ObjectManager $manager): void
     {
-        $categories = ['Футболки', 'Бейсболки', 'Кружки', 'Наклейки', 'Значки',];
+        $categories = ['Одежда', 'Кружки', 'Наклейки', 'Значки',];
+        $subCategories = ['Футболки', 'Бейсболки'];
         foreach ($categories as $name) {
             $category = new Category();
             $category->setName($name);
+            $manager->persist($category);
+        }
+        foreach ($subCategories as $name) {
+            $category = new Category();
+            $category->setName($name)
+                ->setParent(1);
             $manager->persist($category);
         }
 
@@ -55,6 +62,7 @@ class AppFixtures extends Fixture
             $product = new Product();
             $categories = $manager->getRepository(Category::class)->findAll();
             $tags = $manager->getRepository(Tag::class)->findAll();
+            $tagsRand = array_rand($tags, 2);
             $product->setName($this->faker->sentence())
                 ->setCategory($categories[array_rand($categories)])
                 ->setSkuNumber($this->faker->numerify('######'))
@@ -62,7 +70,7 @@ class AppFixtures extends Fixture
                 ->setPrice($this->faker->randomNumber(4))
                 ->setStock($this->faker->randomNumber(5))
                 ->setImagePaths(['img/d.png'])
-                ->addTag($tags[array_rand($tags)]);
+                ->addTag($tags[$tagsRand[0]], $tags[$tagsRand[1]]);
             $manager->persist($product);
         }
 

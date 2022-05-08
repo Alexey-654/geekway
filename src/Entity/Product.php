@@ -191,13 +191,15 @@ class Product
         return $this;
     }
 
-    public function addTag(Tag ...$tags): void
+    public function addTag(Tag ...$tags): self
     {
         foreach ($tags as $tag) {
             if (!$this->tags->contains($tag)) {
                 $this->tags->add($tag);
             }
         }
+
+        return $this;
     }
 
     public function removeTag(Tag $tag): void

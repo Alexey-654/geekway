@@ -13,17 +13,13 @@ use Doctrine\Persistence\ManagerRegistry;
 class MainPageController extends AbstractController
 {
     #[Route('/', name: 'main_page', methods: ['GET', 'HEAD'])]
-    public function index(ManagerRegistry $doctrine): Response
+    public function index(ManagerRegistry $doctrine, string $_route): Response
     {
         $products = $doctrine->getRepository(Product::class)->findAll();
-        $categories = $doctrine->getRepository(Category::class)->findAll();
-        $tags = $doctrine->getRepository(Tag::class)->findAll();
 
         return $this->render('main_page/index.html.twig', [
-            'controller_name' => 'MainPageController',
+            'routeName' => $_route,
             'products' => $products,
-            'categories' => $categories,
-            'tags' => $tags,
         ]);
     }
 }

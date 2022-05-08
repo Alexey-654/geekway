@@ -7,9 +7,15 @@
     <div class="d-flex justify-content-start flex-wrap">
         {% for product in paginator.results %}
             <div class="card m-2" style="width: 18rem;">
-                <img src="/{{ product.imagePaths[0] }}" class="card-img-top p-2" alt="...">
+                <a href="/product/{{ product.slug }}">
+                    <img src="/{{ product.imagePaths[0] }}" class="card-img-top p-2" alt="...">
+                </a>
                 <div class="card-body">
-                    <h5 class="card-title">{{ product.name }}</h5>
+                    <a href="/product/{{ product.slug }}" class="link-dark">
+                        <h5 class="card-title">
+                            {{ product.name }}
+                        </h5>
+                    </a>
                     <p>{{ product.price|format_number(locale='ru') }} ₽</p>
                     <a href="#" class="btn btn-primary">В корзину</a>
                 </div>
