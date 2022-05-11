@@ -69,7 +69,7 @@ class AppFixtures extends Fixture
                 ->setDescription($this->faker->text(300))
                 ->setPrice($this->faker->randomNumber(4))
                 ->setStock($this->faker->randomNumber(5))
-                ->setImagePaths(['img/d.png'])
+                ->setImagePaths(['img/d1.png', 'img/d2.jpg', 'img/d3.jpg'])
                 ->addTag($tags[$tagsRand[0]], $tags[$tagsRand[1]]);
             $manager->persist($product);
         }

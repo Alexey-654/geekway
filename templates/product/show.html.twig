@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ product.name }} | geekway{% endblock %}
+
+{% block body %}
+
+    <div class="row py-5">
+        <div class="col-6">
+            <div id="carouselIndicators" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    {% for imgPath in product.imagePaths %}
+                        <button type="button"
+                                data-bs-target="#carouselIndicators"
+                                data-bs-slide-to="{{ loop.index0 }}"
+                                {% if loop.first %} class="active" {% endif %}
+                                aria-current="true"
+                                aria-label="Slide 1">
+                        </button>
+                    {% endfor %}
+                </div>
+                <div class="carousel-inner">
+                    {% for imgPath in product.imagePaths %}
+                        <div class="carousel-item {% if loop.first %} active {% endif %}">
+                            <img src="/{{ imgPath }}" class="d-block w-100" alt="...">
+                        </div>
+                    {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselIndicators"
+                        data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselIndicators"
+                        data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+        <div class="col-6">
+            <h1 class="fs-3"> {{ product.name }} </h1>
+            <p>цена: <span class="fs-4">{{ product.price }} ₽</span></p>
+
+                <select class="form-select form-select-sm" aria-label=".form-select-sm example">
+                    <option selected disabled>Размер</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                </select>
+
+                <button type="submit" class="btn btn-primary">Добавить в корзину</button>
+
+            <h3>О товаре</h3>
+            <p>{{ product.description }}</p>
+        </div>
+    </div>
+{% endblock %}
