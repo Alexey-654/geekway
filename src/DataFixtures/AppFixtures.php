@@ -8,6 +8,7 @@ use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use App\Entity\Product;
 use App\Entity\Category;
+use App\Entity\Discount;
 
 class AppFixtures extends Fixture
 {
@@ -22,6 +23,7 @@ class AppFixtures extends Fixture
     {
         $this->loadCategory($manager);
         $this->loadTags($manager);
+        $this->loadDiscount($manager);
         $this->loadProducts($manager);
     }
 
@@ -58,10 +60,11 @@ class AppFixtures extends Fixture
 
     private function loadProducts(ObjectManager $manager): void
     {
+        $categories = $manager->getRepository(Category::class)->findAll();
+        $tags = $manager->getRepository(Tag::class)->findAll();
+        $discounts = $manager->getRepository(Discount::class)->findAll();
         for ($i = 0; $i < 20; $i += 1) {
             $product = new Product();
-            $categories = $manager->getRepository(Category::class)->findAll();
-            $tags = $manager->getRepository(Tag::class)->findAll();
             $tagsRand = array_rand($tags, 2);
             $product->setName($this->faker->sentence())
                 ->setCategory($categories[array_rand($categories)])
@@ -71,9 +74,26 @@ class AppFixtures extends Fixture
                 ->setStock($this->faker->randomNumber(5))
                 ->setImagePaths(['img/d1.png', 'img/d2.jpg', 'img/d3.jpg'])
                 ->addTag($tags[$tagsRand[0]], $tags[$tagsRand[1]]);
+            if ($i % 4 === 0) {
+                $product->setDiscount($discounts[array_rand($discounts)]);
+            }
             $manager->persist($product);
         }
 
         $manager->flush();
     }
+
+    private function loadDiscount(ObjectManager $manager): void
+    {
+        for ($i = 0; $i < 5; $i += 1) {
+            $discount = new Discount();
+            $discount->setName($this->faker->sentence())
+                ->setDiscountPercent(rand(10, 50))
+                ->setActiveTill($this->faker->dateTimeThisYear('1 month'));
+            $manager->persist($discount);
+        }
+
+        $manager->flush();
+    }
+
 }

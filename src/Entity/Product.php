@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Entity\Category;
 use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -76,6 +75,11 @@ class Product
     private $tags;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Discount", inversedBy="products")
+     */
+    private $discount;
+
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime", name="created_at")
      */
@@ -86,6 +90,7 @@ class Product
      * @ORM\Column(type="datetime", name="updated_at")
      */
     protected $updatedAt;
+
 
     public function __construct()
     {
@@ -220,6 +225,18 @@ class Product
     public function getUpdatedAt(): \DateTime
     {
         return $this->updatedAt;
+    }
+
+    public function getDiscount(): ?Discount
+    {
+        return $this->discount;
+    }
+
+    public function setDiscount(?Discount $discount): self
+    {
+        $this->discount = $discount;
+
+        return $this;
     }
 
 }
