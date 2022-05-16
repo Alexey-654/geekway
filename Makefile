@@ -9,6 +9,9 @@ t:
 #
 # php bin/console doctrine:fixtures:load
 
+# execute particular migration
+# php bin/console doctrine:migrations:execute --down 'DoctrineMigrations\Version20211025202345'
+
 #debug
 # php bin/console debug:autowiring --all
 
