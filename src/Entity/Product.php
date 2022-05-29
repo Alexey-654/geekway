@@ -13,7 +13,7 @@ use function Symfony\Component\String\u;
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
  */
-class Product
+abstract class Product
 {
     use TimestampableEntity;
 
@@ -48,11 +48,6 @@ class Product
      * @ORM\Column(type="text", nullable=true)
      */
     private $description;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $stock;
 
     /**
      * @Gedmo\Slug(fields={"name", "skuNumber"})
@@ -90,6 +85,12 @@ class Product
      * @ORM\Column(type="datetime", name="updated_at")
      */
     protected $updatedAt;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=ProductType::class, inversedBy="products")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $type;
 
 
     public function __construct()
@@ -167,18 +168,6 @@ class Product
         return u($this->description)->truncate(100, '...', false);
     }
 
-    public function getStock(): ?int
-    {
-        return $this->stock;
-    }
-
-    public function setStock(int $stock): self
-    {
-        $this->stock = $stock;
-
-        return $this;
-    }
-
     public function getSlug(): ?string
     {
         return $this->slug;
@@ -235,6 +224,18 @@ class Product
     public function setDiscount(?Discount $discount): self
     {
         $this->discount = $discount;
+
+        return $this;
+    }
+
+    public function getType(): ?ProductType
+    {
+        return $this->type;
+    }
+
+    public function setType(?ProductType $type): self
+    {
+        $this->type = $type;
 
         return $this;
     }

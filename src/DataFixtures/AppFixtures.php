@@ -2,6 +2,9 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\ClothesProduct;
+use App\Entity\MiscProduct;
+use App\Entity\ProductType;
 use App\Entity\Tag;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -23,14 +26,15 @@ class AppFixtures extends Fixture
     {
         $this->loadCategory($manager);
         $this->loadTags($manager);
-        $this->loadDiscount($manager);
+        $this->loadDiscounts($manager);
+        $this->loadProductTypes($manager);
         $this->loadProducts($manager);
     }
 
     private function loadCategory(ObjectManager $manager): void
     {
         $categories = ['Одежда', 'Кружки', 'Наклейки', 'Значки',];
-        $subCategories = ['Футболки', 'Бейсболки'];
+        $subCategories = ['Футболки', 'Худи', 'Бейсболки'];
         foreach ($categories as $name) {
             $category = new Category();
             $category->setName($name);
@@ -63,27 +67,32 @@ class AppFixtures extends Fixture
         $categories = $manager->getRepository(Category::class)->findAll();
         $tags = $manager->getRepository(Tag::class)->findAll();
         $discounts = $manager->getRepository(Discount::class)->findAll();
-        for ($i = 0; $i < 20; $i += 1) {
-            $product = new Product();
+        $productTypes = $manager->getRepository(ProductType::class)->findAll();
+        for ($i = 0; $i < 10; $i += 1) {
             $tagsRand = array_rand($tags, 2);
+            $product = $i % 2 === 0 ? new ClothesProduct() : new MiscProduct();
             $product->setName($this->faker->sentence())
                 ->setCategory($categories[array_rand($categories)])
+                ->setType($productTypes[array_rand($productTypes)])
                 ->setSkuNumber($this->faker->numerify('######'))
                 ->setDescription($this->faker->text(300))
                 ->setPrice($this->faker->randomNumber(4))
-                ->setStock($this->faker->randomNumber(5))
                 ->setImagePaths(['img/d1.png', 'img/d2.jpg', 'img/d3.jpg'])
                 ->addTag($tags[$tagsRand[0]], $tags[$tagsRand[1]]);
-            if ($i % 4 === 0) {
-                $product->setDiscount($discounts[array_rand($discounts)]);
+                $i % 4 != 0 ?: $product->setDiscount($discounts[array_rand($discounts)]);
+            if ($i % 2 === 0) {
+                $product->setStock(['s' => 23, 'm' => 5, 'l' => 12, 'xl' => 0]);
+            } else {
+                $product->setStock(rand(0, 200));
             }
+
             $manager->persist($product);
         }
 
         $manager->flush();
     }
 
-    private function loadDiscount(ObjectManager $manager): void
+    private function loadDiscounts(ObjectManager $manager): void
     {
         for ($i = 0; $i < 5; $i += 1) {
             $discount = new Discount();
@@ -96,4 +105,17 @@ class AppFixtures extends Fixture
         $manager->flush();
     }
 
+    private function loadProductTypes(ObjectManager $manager): void
+    {
+        $productTypeNames = ['одежда', 'база'];
+        foreach ($productTypeNames as $name) {
+            $productType = new ProductType();
+            $productType->setName($name);
+            $manager->persist($productType);
+        }
+
+        $manager->flush();
+    }
+
+//->setStock($this->faker->randomNumber(5))
 }
