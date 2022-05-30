@@ -34,16 +34,21 @@ class AppFixtures extends Fixture
     private function loadCategory(ObjectManager $manager): void
     {
         $categories = ['Одежда', 'Кружки', 'Наклейки', 'Значки',];
-        $subCategories = ['Футболки', 'Худи', 'Бейсболки'];
         foreach ($categories as $name) {
             $category = new Category();
             $category->setName($name);
             $manager->persist($category);
         }
+        $manager->flush();
+
+        $subCategories = ['Футболки', 'Худи', 'Бейсболки'];
+        $parent = $manager
+            ->getRepository(Category::class)
+            ->findOneBy(['name' => 'Одежда']);
         foreach ($subCategories as $name) {
             $category = new Category();
             $category->setName($name)
-                ->setParent(1);
+                ->setParent($parent);
             $manager->persist($category);
         }
 
