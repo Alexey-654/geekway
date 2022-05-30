@@ -11,7 +11,9 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use function Symfony\Component\String\u;
 
 /**
- * @ORM\Entity(repositoryClass=ProductRepository::class)
+ * @ORM\Entity
+ * @ORM\InheritanceType("JOINED")
+ * @ORM\DiscriminatorColumn(name="discr", type="string")
  */
 abstract class Product
 {
