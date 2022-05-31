@@ -15,7 +15,7 @@ use function Symfony\Component\String\u;
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  */
-abstract class Product
+class Product
 {
     use TimestampableEntity;
 

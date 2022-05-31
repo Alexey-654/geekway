@@ -71,7 +71,7 @@ class AppFixtures extends Fixture
         $categories = $manager->getRepository(Category::class)->findAll();
         $tags = $manager->getRepository(Tag::class)->findAll();
         $discounts = $manager->getRepository(Discount::class)->findAll();
-        for ($i = 0; $i < 10; $i += 1) {
+        for ($i = 0; $i < 30; $i += 1) {
             $tagsRand = array_rand($tags, 2);
             $product = $i % 2 === 0 ? new ClothesProduct() : new MiscProduct();
             $product->setName($this->faker->sentence())
