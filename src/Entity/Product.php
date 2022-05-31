@@ -88,13 +88,6 @@ abstract class Product
      */
     protected $updatedAt;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=ProductType::class, inversedBy="products")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $type;
-
-
     public function __construct()
     {
         $this->tags = new ArrayCollection();
@@ -229,17 +222,4 @@ abstract class Product
 
         return $this;
     }
-
-    public function getType(): ?ProductType
-    {
-        return $this->type;
-    }
-
-    public function setType(?ProductType $type): self
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
 }
