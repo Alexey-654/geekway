@@ -27,7 +27,8 @@ class AppFixtures extends Fixture
         $this->loadCategory($manager);
         $this->loadTags($manager);
         $this->loadDiscounts($manager);
-        $this->loadProducts($manager);
+        $this->loadMiscProducts($manager);
+        $this->loadClothesProducts($manager);
     }
 
     private function loadCategory(ObjectManager $manager): void
@@ -66,33 +67,52 @@ class AppFixtures extends Fixture
         $manager->flush();
     }
 
-    private function loadProducts(ObjectManager $manager): void
+    private function loadMiscProducts(ObjectManager $manager): void
     {
-        $categories = $manager->getRepository(Category::class)->findAll();
+        $categories = $manager->getRepository(Category::class)->findBy(['name' => ['Кружки', 'Наклейки', 'Значки']]);
         $tags = $manager->getRepository(Tag::class)->findAll();
         $discounts = $manager->getRepository(Discount::class)->findAll();
-        for ($i = 0; $i < 30; $i += 1) {
+        for ($i = 0; $i < 20; $i += 1) {
             $tagsRand = array_rand($tags, 2);
-            $product = $i % 2 === 0 ? new ClothesProduct() : new MiscProduct();
-            $product->setName($this->faker->sentence())
-                ->setCategory($categories[array_rand($categories)])
-                ->setSkuNumber($this->faker->numerify('######'))
-                ->setDescription($this->faker->text(300))
-                ->setPrice($this->faker->randomNumber(4))
-                ->setImagePaths(['img/d1.png', 'img/d2.jpg', 'img/d3.jpg'])
-                ->addTag($tags[$tagsRand[0]], $tags[$tagsRand[1]]);
+            $product = $this->setCommonPartForAllProduct(new MiscProduct());
+            $product->setCategory($categories[array_rand($categories)])
+                ->addTag($tags[$tagsRand[0]], $tags[$tagsRand[1]])
+                ->setStock(rand(0, 200))
+                ->setImagePaths(['img/misc1.jpg', 'img/d2.jpg', 'img/d3.jpg']);
             $i % 4 != 0 ?: $product->setDiscount($discounts[array_rand($discounts)]);
-            if ($i % 2 === 0) {
-                $product->setStock(['s' => 23, 'm' => 5, 'l' => 12, 'xl' => 0]);
-            }
-            else {
-                $product->setStock(rand(0, 200));
-            }
-
             $manager->persist($product);
         }
 
         $manager->flush();
+    }
+
+    private function loadClothesProducts(ObjectManager $manager): void
+    {
+        $categories = $manager->getRepository(Category::class)->findBy(['name' => ['Футболки', 'Худи', 'Бейсболки']]);
+        $tags = $manager->getRepository(Tag::class)->findAll();
+        $discounts = $manager->getRepository(Discount::class)->findAll();
+        for ($i = 0; $i < 20; $i += 1) {
+            $tagsRand = array_rand($tags, 2);
+            $product = $this->setCommonPartForAllProduct(new ClothesProduct());
+            $product->setCategory($categories[array_rand($categories)])
+                ->addTag($tags[$tagsRand[0]], $tags[$tagsRand[1]])
+                ->setStock(['s' => 23, 'm' => 5, 'l' => 12, 'xl' => 0])
+                ->setImagePaths(['img/d1.png', 'img/d2.jpg', 'img/d3.jpg']);
+            $i % 4 != 0 ?: $product->setDiscount($discounts[array_rand($discounts)]);
+            $manager->persist($product);
+        }
+
+        $manager->flush();
+    }
+
+    private function setCommonPartForAllProduct($product)
+    {
+        $product->setName($this->faker->sentence())
+            ->setSkuNumber($this->faker->numerify('######'))
+            ->setDescription($this->faker->text(300))
+            ->setPrice($this->faker->randomNumber(4));
+
+        return $product;
     }
 
     private function loadDiscounts(ObjectManager $manager): void

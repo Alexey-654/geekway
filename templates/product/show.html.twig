@@ -38,20 +38,33 @@
             </div>
         </div>
         <div class="col-6">
-            <h1 class="fs-3"> {{ product.name }} </h1>
-            <p>цена: <span class="fs-4">{{ product.price }} ₽</span></p>
-
-                <select class="form-select form-select-sm" aria-label=".form-select-sm example">
-                    <option selected disabled>Размер</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                </select>
-
-                <button type="submit" class="btn btn-primary">Добавить в корзину</button>
-
-            <h3>О товаре</h3>
-            <p>{{ product.description }}</p>
+            <div class="d-flex flex-column justify-content-evenly h-100">
+                <div>
+                    <h1 class="fs-3"> {{ product.name }} </h1>
+                </div>
+                <div>
+                    цена: <span class="fs-4">{{ product.price }} ₽</span>
+                </div>
+                {% if product.getProductType() == 'ClothesProduct' %}
+                <div>
+                    <select class="form-select form-select-sm fs-6" aria-label=".form-select-sm example">
+                        <option selected disabled>Размер</option>
+                        {% for size, stock in product.stock %}
+                        <option value="{{ stock }}">{{ size }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+                <div>
+                    <button type="submit" class="btn btn-primary">Добавить в корзину</button>
+                </div>
+                <div>
+                    <h3>О товаре</h3>
+                </div>
+                <div>
+                    <p>{{ product.description }}</p>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

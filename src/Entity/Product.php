@@ -11,7 +11,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use function Symfony\Component\String\u;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass=ProductRepository::class)
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
  */
@@ -53,7 +53,7 @@ class Product
 
     /**
      * @Gedmo\Slug(fields={"name", "skuNumber"})
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $slug;
 
@@ -221,5 +221,10 @@ class Product
         $this->discount = $discount;
 
         return $this;
+    }
+
+    public function getProductType()
+    {
+        return (new \ReflectionClass($this))->getShortName();
     }
 }
