@@ -1,9 +1,9 @@
-<?php
+<?php /** @noinspection PhpMultipleClassDeclarationsInspection */
 
-namespace App\Repository;
+namespace App\Infrastructure\Repository;
 
-use App\Entity\Product;
-use App\Pagination\Paginator;
+use App\Application\Pagination\Paginator;
+use App\Domain\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -13,7 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Product[]    findAll()
  * @method Product[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ProductRepository extends ServiceEntityRepository
+final class ProductRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -23,7 +23,7 @@ class ProductRepository extends ServiceEntityRepository
     public function findByCategory(int $page = 1, ?string $categorySlug = null): Paginator
     {
         $qb = $this->createQueryBuilder('p');
-        if (null !== $categorySlug) {
+        if ($categorySlug !== null) {
             $qb->addSelect('c')
                 ->innerJoin('p.category', 'c')
                 ->where('c.slug = :slug')
@@ -45,32 +45,4 @@ class ProductRepository extends ServiceEntityRepository
         return (new Paginator($qb))->paginate($page);
     }
 
-// /**
-//  * @return Product[] Returns an array of Product objects
-//  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Product
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

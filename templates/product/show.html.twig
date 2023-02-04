@@ -45,7 +45,6 @@
                 <div>
                     цена: <span class="fs-4">{{ product.price }} ₽</span>
                 </div>
-                {% if product.getProductType() == 'ClothesProduct' %}
                 <div>
                     <select class="form-select form-select-sm fs-6" aria-label=".form-select-sm example">
                         <option selected disabled>Размер</option>
@@ -54,7 +53,6 @@
                         {% endfor %}
                     </select>
                 </div>
-                {% endif %}
                 <div>
                     <button type="submit" class="btn btn-primary">Добавить в корзину</button>
                 </div>

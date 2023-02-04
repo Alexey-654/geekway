@@ -1,8 +1,8 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
     globals:
-        categories: '@App\Repository\CategoryRepository'
-        tags: '@App\Repository\TagRepository'
+        categories: '@App\Infrastructure\Repository\CategoryRepository'
+        tags: '@App\Infrastructure\Repository\TagRepository'
 when@test:
     twig:
         strict_variables: true

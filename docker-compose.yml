@@ -2,7 +2,7 @@ version: '3.7'
 services:
     db:
         container_name: db-geekway
-        image: postgres:14
+        image: postgres:15
         ports:
             - "5400:5432"
         networks:
@@ -37,21 +37,21 @@ services:
             context: ./services/nginx
         volumes:
             - .:/geekway
-#        ports:
-#            - "80:80"
-#            - "443:443"
+        ports:
+            - "80:80"
+            - "443:443"
         networks:
             - default
-            - outside
+#            - outside
         depends_on:
             - php
         environment:
             - VIRTUAL_HOST=geekway.local
 
-networks:
-    outside:
-        external: true
-        name: nginx-proxy
+#networks:
+#    outside:
+#        external: true
+#        name: nginx-proxy
 
 volumes:
     bash_history:

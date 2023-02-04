@@ -1,26 +1,22 @@
 <?php
 
-namespace App\Controller;
+namespace App\Infrastructure\Controller;
 
-use App\Entity\Product;
+use App\Domain\Entity\Product;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ProductController extends AbstractController
+final class ProductController extends AbstractController
 {
     #[Route('/product/{slug}', name: 'product_show')]
     public function show(ManagerRegistry $doctrine, string $slug): Response
     {
-        $product = $doctrine
-            ->getRepository(Product::class)
-            ->findOneBy(['slug' => $slug]);
+        $product = $doctrine->getRepository(Product::class)->findOneBy(['slug' => $slug]);
 
         if (!$product) {
-            throw $this->createNotFoundException(
-                'No product found for name ' . $slug
-            );
+            throw $this->createNotFoundException('No product found for name ' . $slug);
         }
 
         return $this->render('product/show.html.twig', [

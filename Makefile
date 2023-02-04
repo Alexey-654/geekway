@@ -1,6 +1,14 @@
-t:
+php:
 	docker exec -t -i php-geekway /bin/bash
 
+run:
+	docker ps -aq | xargs docker stop | xargs docker rm;
+	docker compose up -d;
+	docker exec -t -i php-geekway /bin/bash
+
+clean:
+	docker exec -t -i php-geekway /bin/bash;
+	php
 #db
 # php bin/console d:m:m
 #
@@ -19,3 +27,6 @@ t:
 #npm install
 #npm run watch
 #npm run build
+
+#remove all docker containers
+#docker ps -aq | xargs docker stop | xargs docker rm

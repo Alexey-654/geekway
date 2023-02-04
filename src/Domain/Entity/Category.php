@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Entity;
+namespace App\Domain\Entity;
 
-use App\Repository\CategoryRepository;
+use App\Infrastructure\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
  * @ORM\Entity(repositoryClass=CategoryRepository::class)
@@ -21,40 +21,30 @@ class Category
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int|null $id;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      */
-    private $name;
+    private string $name;
 
     /**
      * @Gedmo\Slug(fields={"name"})
      * @ORM\Column(type="string", length=255, unique=true)
      */
-    private $slug;
-
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime", name="created_at")
-     */
-    protected $createdAt;
-
-    /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime", name="updated_at")
-     */
-    protected $updatedAt;
+    private string $slug;
 
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="children")
      */
-    private $parent;
+    private ?Category $parent;
 
     /**
+     * @var Collection<int, Category>
      * @ORM\OneToMany(targetEntity=Category::class, mappedBy="parent")
      */
-    private $children;
+    private Collection $children;
+
 
     public function __construct()
     {
@@ -71,11 +61,9 @@ class Category
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(string $name): void
     {
         $this->name = $name;
-
-        return $this;
     }
 
     public function getSlug(): ?string
@@ -83,21 +71,9 @@ class Category
         return $this->slug;
     }
 
-    public function setSlug(string $slug): self
+    public function setSlug(string $slug): void
     {
         $this->slug = $slug;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): \DateTime
-    {
-        return $this->createdAt;
-    }
-
-    public function getUpdatedAt(): \DateTime
-    {
-        return $this->updatedAt;
     }
 
     public function getParent(): ?self
@@ -105,11 +81,9 @@ class Category
         return $this->parent;
     }
 
-    public function setParent(?self $parent): self
+    public function setParent(?self $parent): void
     {
         $this->parent = $parent;
-
-        return $this;
     }
 
     /**
@@ -120,17 +94,15 @@ class Category
         return $this->children;
     }
 
-    public function addChild(self $child): self
+    public function addChild(self $child): void
     {
         if (!$this->children->contains($child)) {
             $this->children[] = $child;
             $child->setParent($this);
         }
-
-        return $this;
     }
 
-    public function removeChild(self $child): self
+    public function removeChild(self $child): void
     {
         if ($this->children->removeElement($child)) {
             // set the owning side to null (unless already changed)
@@ -138,8 +110,6 @@ class Category
                 $child->setParent(null);
             }
         }
-
-        return $this;
     }
 
 }
