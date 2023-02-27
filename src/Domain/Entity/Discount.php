@@ -9,6 +9,7 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
  * @ORM\Entity(repositoryClass=DiscountRepository::class)
+ * @ORM\Table(name="discount")
  */
 class Discount
 {

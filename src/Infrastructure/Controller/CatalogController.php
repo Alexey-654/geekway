@@ -10,10 +10,26 @@ use Symfony\Component\Routing\Annotation\Route;
 
 final class CatalogController extends AbstractController
 {
-    #[Route('/catalog/{slug}/{page}', name: 'catalog_category_paginated', requirements: ['page' => '\d+'], defaults: ['page' => '1'])]
-    public function showByCategory(ManagerRegistry $doctrine, string $slug, int $page, string $_route): Response
+    private ManagerRegistry $doctrine;
+
+    /**
+     * @param ManagerRegistry $doctrine
+     */
+    public function __construct(ManagerRegistry $doctrine)
     {
-        $products = $doctrine->getRepository(Product::class)->findByCategory($page, $slug);
+        $this->doctrine = $doctrine;
+    }
+
+    /**
+     * @param string $slug
+     * @param int $page
+     * @param string $_route
+     * @return Response
+     */
+    #[Route('/catalog/{slug}/{page}', name: 'catalog_category_paginated', requirements: ['page' => '\d+'], defaults: ['page' => '1'])]
+    public function showByCategory(string $slug, int $page, string $_route): Response
+    {
+        $products = $this->doctrine->getRepository(Product::class)->findByCategorySlug($slug, $page);
 
         return $this->render('catalog/index.html.twig', [
             'paginator' => $products,
@@ -22,10 +38,16 @@ final class CatalogController extends AbstractController
         ]);
     }
 
+    /**
+     * @param string $slug
+     * @param int $page
+     * @param string $_route
+     * @return Response
+     */
     #[Route('/catalog/tag/{slug}/{page}', name: 'catalog_tag_paginated', requirements: ['page' => '\d+'], defaults: ['page' => '1'])]
-    public function showByTag(ManagerRegistry $doctrine, string $slug, int $page, string $_route): Response
+    public function showByTag(string $slug, int $page, string $_route): Response
     {
-        $products = $doctrine->getRepository(Product::class)->findByTag($page, $slug);
+        $products = $this->doctrine->getRepository(Product::class)->findByTag($page, $slug);
 
         return $this->render('catalog/index.html.twig', [
             'paginator' => $products,

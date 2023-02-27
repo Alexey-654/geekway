@@ -36,7 +36,7 @@ class Product
     private Category $category;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Discount", inversedBy="products")
+     * @ORM\ManyToOne(targetEntity="Discount", inversedBy="product")
      */
     private Discount|null $discount;
 
@@ -89,20 +89,20 @@ class Product
         $this->tags = new ArrayCollection();
     }
 
-    public static function create(ProductDto $productDto, ManagerRegistry $registry): self
-    {
-        $product              = new self();
-        $product->name        = $productDto->name;
-        $product->description = $productDto->description;
-        $product->price       = $productDto->price;
-        $product->stock       = [];
-        $product->skuNumber   = $productDto->skuNumber;
-        $product->imagePaths  = $productDto->imagePaths;
-        $product->category    = (new CategoryRepository($registry))->find($productDto->categoryId);
-        $product->discount    = (new DiscountRepository($registry))->find($productDto->discountId);
-
-        return $product;
-    }
+//    public static function create(ProductDto $productDto, ManagerRegistry $registry): self
+//    {
+//        $product              = new self();
+//        $product->name        = $productDto->name;
+//        $product->description = $productDto->description;
+//        $product->price       = $productDto->price;
+//        $product->stock       = [];
+//        $product->skuNumber   = $productDto->skuNumber;
+//        $product->imagePaths  = $productDto->imagePaths;
+//        $product->category    = (new CategoryRepository($registry))->find($productDto->categoryId);
+//        $product->discount    = (new DiscountRepository($registry))->find($productDto->discountId);
+//
+//        return $product;
+//    }
 
     /**
      * @param Category $category

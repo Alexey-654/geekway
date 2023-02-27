@@ -35,16 +35,18 @@ class Category
     private string $slug;
 
     /**
+     * Many Categories have One Category.
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="children")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
      */
-    private ?Category $parent;
+    private Category|null $parent = null;
 
     /**
+     * One Category has Many Categories.
      * @var Collection<int, Category>
      * @ORM\OneToMany(targetEntity=Category::class, mappedBy="parent")
      */
     private Collection $children;
-
 
     public function __construct()
     {

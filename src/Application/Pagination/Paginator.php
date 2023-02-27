@@ -2,7 +2,7 @@
 
 namespace App\Application\Pagination;
 
-use Doctrine\ORM\QueryBuilder as DoctrineQueryBuilder;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\CountWalker;
 use Doctrine\ORM\Tools\Pagination\Paginator as DoctrinePaginator;
 use Exception;
@@ -12,20 +12,20 @@ use function count;
 
 final class Paginator
 {
-    public const PAGE_SIZE      = 5;
+    public const ITEMS_ON_PAGE  = 6;
     public const START_PAGE_NUM = 1;
 
-    private DoctrineQueryBuilder $queryBuilder;
-    private int                  $currentPage;
+    private QueryBuilder $queryBuilder;
+    private int          $currentPage;
     private int                  $pageSize;
     private Traversable          $results;
     private int                  $numResults;
 
     /**
-     * @param DoctrineQueryBuilder $queryBuilder
+     * @param QueryBuilder $queryBuilder
      * @param int $pageSize
      */
-    public function __construct(DoctrineQueryBuilder $queryBuilder, int $pageSize = self::PAGE_SIZE)
+    public function __construct(QueryBuilder $queryBuilder, int $pageSize = self::ITEMS_ON_PAGE)
     {
         $this->queryBuilder = $queryBuilder;
         $this->pageSize     = $pageSize;

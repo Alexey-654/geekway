@@ -6,9 +6,6 @@ run:
 	docker compose up -d;
 	docker exec -t -i php-geekway /bin/bash
 
-clean:
-	docker exec -t -i php-geekway /bin/bash;
-	php
 #db
 # php bin/console d:m:m
 #

@@ -6,6 +6,7 @@ use App\Application\Pagination\Paginator;
 use App\Domain\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 
 /**
  * @method Product|null find($id, $lockMode = null, $lockVersion = null)
@@ -15,34 +16,51 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 final class ProductRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private CategoryRepository $categoryRepository;
+
+    /**
+     * @param ManagerRegistry $registry
+     * @param CategoryRepository $categoryRepository
+     */
+    public function __construct(ManagerRegistry $registry, CategoryRepository $categoryRepository)
     {
         parent::__construct($registry, Product::class);
+        $this->categoryRepository = $categoryRepository;
     }
 
-    public function findByCategory(int $page = 1, ?string $categorySlug = null): Paginator
+    /**
+     * @param string $categorySlug
+     * @param int $page
+     * @return Paginator
+     * @throws Exception
+     */
+    public function findByCategorySlug(string $categorySlug, int $page): Paginator
     {
-        $qb = $this->createQueryBuilder('p');
-        if ($categorySlug !== null) {
-            $qb->addSelect('c')
-                ->innerJoin('p.category', 'c')
-                ->where('c.slug = :slug')
-                ->setParameter('slug', $categorySlug);
-        }
-        $qb->orderBy('p.updatedAt', 'ASC');
+        $categoryIds = $this->categoryRepository->findBySlugWithChildren($categorySlug);
+        $expression  = $this->getEntityManager()->getExpressionBuilder()->in('category', $categoryIds);
+        $queryBuilder = $this->createQueryBuilder('product')
+            ->innerJoin('product.category', 'category')
+            ->andWhere($expression)
+            ->orderBy('product.updatedAt', 'ASC');
 
-        return (new Paginator($qb))->paginate($page);
+        return (new Paginator($queryBuilder))->paginate($page);
     }
 
-    public function findByTag(int $page = 1, string $tagSlug = null): Paginator
+    /**
+     * @param int $page
+     * @param string $tagSlug
+     * @return Paginator
+     * @throws Exception
+     */
+    public function findByTag(int $page, string $tagSlug): Paginator
     {
-        $qb = $this->createQueryBuilder('p')
+        $queryBuilder = $this->createQueryBuilder('p')
             ->addSelect('t')
             ->innerJoin('p.tags', 't')
-            ->where('t.slug = :slug')
+            ->andWhere('t.slug = :slug')
             ->setParameter('slug', $tagSlug);
 
-        return (new Paginator($qb))->paginate($page);
+        return (new Paginator($queryBuilder))->paginate($page);
     }
 
 }
