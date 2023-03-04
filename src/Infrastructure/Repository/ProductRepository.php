@@ -36,12 +36,14 @@ final class ProductRepository extends ServiceEntityRepository
      */
     public function findByCategorySlug(string $categorySlug, int $page): Paginator
     {
-        $categoryIds = $this->categoryRepository->findBySlugWithChildren($categorySlug);
-        $expression  = $this->getEntityManager()->getExpressionBuilder()->in('category', $categoryIds);
-        $queryBuilder = $this->createQueryBuilder('product')
-            ->innerJoin('product.category', 'category')
+        $categoryIds  = $this->categoryRepository->findBySlugWithChildren($categorySlug);
+        $expression   = $this->getEntityManager()->getExpressionBuilder()->in('category', $categoryIds);
+        $queryBuilder = $this->createQueryBuilder('p')
+            ->addSelect('d')
+            ->innerJoin('p.category', 'category')
+            ->leftJoin('p.discount', 'd')
             ->andWhere($expression)
-            ->orderBy('product.updatedAt', 'ASC');
+            ->orderBy('p.updatedAt', 'ASC');
 
         return (new Paginator($queryBuilder))->paginate($page);
     }
@@ -55,7 +57,8 @@ final class ProductRepository extends ServiceEntityRepository
     public function findByTag(int $page, string $tagSlug): Paginator
     {
         $queryBuilder = $this->createQueryBuilder('p')
-            ->addSelect('t')
+            ->addSelect('d')
+            ->leftJoin('p.discount', 'd')
             ->innerJoin('p.tags', 't')
             ->andWhere('t.slug = :slug')
             ->setParameter('slug', $tagSlug);

@@ -11,6 +11,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
+use function floor;
 use function Symfony\Component\String\u;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class, readOnly: false)]
@@ -171,6 +172,23 @@ class Product
 
     public function getPrice(): ?int
     {
+        return $this->price;
+    }
+
+    public function hasDiscount(): bool
+    {
+        return (bool)$this->discount;
+    }
+
+    public function getPriceWithDiscount(): ?int
+    {
+        if ($this->hasDiscount()) {
+            $discountPercent = $this->discount->getDiscountPercent();
+            $discountPrice   = (100 - $discountPercent) / 100 * $this->price;
+
+            return floor($discountPrice);
+        }
+
         return $this->price;
     }
 

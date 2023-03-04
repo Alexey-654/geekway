@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Geekway подарки для гиков{% endblock %}
+{% block title %}{{ groupName }} | Geekway подарки для гиков {% endblock %}
 
 {% block body %}
 
@@ -11,13 +11,20 @@
                     <img src="/{{ product.imagePaths[0] }}" class="card-img-top p-2" alt="...">
                 </a>
                 <div class="card-body">
-                    <a href="/product/{{ product.slug }}" class="link-dark">
-                        <h5 class="card-title">
+                    <h5 class="card-title">
+                        {% if product.hasDiscount %}
+                            <span class="text-muted fw-normal"><s>{{ product.price }}</s></span>
+                            <span class="text-danger">{{ product.getPriceWithDiscount|format_number(locale='ru') }} ₽</span>
+                        {% else %}
+                            {{ product.price|format_number(locale='ru') }} ₽
+                        {% endif %}
+                    </h5>
+                    <p>
+                        <a href="/product/{{ product.slug }}" class="link-dark">
                             {{ product.name }}
-                        </h5>
-                    </a>
-                    <p>{{ product.price|format_number(locale='ru') }} ₽</p>
-                    <a href="#" class="btn btn-primary">В корзину</a>
+                        </a>
+                    </p>
+
                 </div>
             </div>
         {% endfor %}
