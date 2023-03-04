@@ -5,47 +5,43 @@ namespace App\Domain\Entity;
 use App\Infrastructure\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass=CategoryRepository::class)
- */
+#[ORM\Entity(repositoryClass: CategoryRepository::class, readOnly: false)]
+#[ORM\Table(name: 'category')]
 class Category
 {
     use TimestampableEntity;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private int|null $id;
 
-    /**
-     * @ORM\Column(type="string", length=255, unique=true)
-     */
+    #[ORM\Column(type: Types::STRING, unique: true)]
+    #[Assert\NotBlank()]
+    #[Assert\Length(max: 255)]
     private string $name;
 
-    /**
-     * @Gedmo\Slug(fields={"name"})
-     * @ORM\Column(type="string", length=255, unique=true)
-     */
+    #[ORM\Column(type: Types::STRING, unique: true)]
+    #[Assert\NotBlank()]
+    #[Assert\Length(max: 255)]
+    #[Gedmo\Slug(fields: ["name"])]
     private string $slug;
 
-    /**
-     * Many Categories have One Category.
-     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="children")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: "children")]
+    #[ORM\JoinColumn(name: "parent_id", referencedColumnName: "id")]
     private Category|null $parent = null;
 
     /**
      * One Category has Many Categories.
      * @var Collection<int, Category>
-     * @ORM\OneToMany(targetEntity=Category::class, mappedBy="parent")
      */
+    #[ORM\OneToMany(mappedBy: "parent", targetEntity: Category::class, )]
     private Collection $children;
 
     public function __construct()

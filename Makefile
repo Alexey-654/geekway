@@ -6,6 +6,11 @@ run:
 	docker compose up -d;
 	docker exec -t -i php-geekway /bin/bash
 
+# clean log file
+rmlog:
+	docker exec -t -i php-geekway /bin/bash
+	echo -n '' > var/log/dev.log
+
 #db
 # php bin/console d:m:m
 #
@@ -27,3 +32,6 @@ run:
 
 #remove all docker containers
 #docker ps -aq | xargs docker stop | xargs docker rm
+
+#php bin/console app:test
+

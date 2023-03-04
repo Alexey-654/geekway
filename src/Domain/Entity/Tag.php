@@ -3,35 +3,32 @@
 namespace App\Domain\Entity;
 
 use App\Infrastructure\Repository\TagRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass=TagRepository::class)
- */
+#[ORM\Entity(repositoryClass: TagRepository::class, readOnly: false)]
 class Tag
 {
     use TimestampableEntity;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private int|null $id;
 
-    /**
-     * @ORM\Column(type="string", length=255, unique=true)
-     */
+    #[ORM\Column(type: Types::STRING, unique: true)]
+    #[Assert\NotBlank()]
+    #[Assert\Length(max: 255)]
     private string $name;
 
-    /**
-     * @Gedmo\Slug(fields={"name"})
-     * @ORM\Column(type="string", length=255, unique=true)
-     */
+    #[ORM\Column(type: Types::STRING, unique: true)]
+    #[Gedmo\Slug(fields: ["name"])]
+    #[Assert\NotBlank()]
+    #[Assert\Length(max: 255)]
     private string $slug;
-
 
     public function getId(): ?int
     {

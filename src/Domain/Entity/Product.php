@@ -2,86 +2,61 @@
 
 namespace App\Domain\Entity;
 
-use App\Application\Dto\ProductDto;
-use App\Infrastructure\Repository\CategoryRepository;
-use App\Infrastructure\Repository\DiscountRepository;
 use App\Infrastructure\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Persistence\ManagerRegistry;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 use function Symfony\Component\String\u;
 
-/**
- * @ORM\Entity(repositoryClass=ProductRepository::class)
- * @ORM\Table(name="product")
- */
+#[ORM\Entity(repositoryClass: ProductRepository::class, readOnly: false)]
 class Product
 {
     use TimestampableEntity;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private int|null $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Category")
-     */
+    #[ORM\ManyToOne(targetEntity: "Category")]
     private Category $category;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Discount", inversedBy="product")
-     */
+    #[ORM\ManyToOne(targetEntity: "Discount")]
     private Discount|null $discount;
 
-    /**
-     * @var Collection<int, Tag>
-     * @ORM\ManyToMany(targetEntity="Tag", cascade={"persist"})
-     * @ORM\JoinTable(name="product_tag")
-     * @ORM\OrderBy({"name": "ASC"})
-     */
+    /** @var Collection<int, Tag> */
+    #[ORM\ManyToMany(targetEntity: "Tag", cascade: ["persist"])]
+    #[ORM\JoinTable(name: "product_tag")]
+    #[ORM\OrderBy(["name" => "ASC"])]
     private Collection $tags;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: Types::STRING)]
+    #[Assert\NotBlank()]
     private string $name;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: Types::INTEGER)]
     private int $price;
 
-    /**
-     * @ORM\Column(type="json")
-     */
+    #[ORM\Column(type: Types::JSON)]
     private array $stock;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private string $description;
 
-    /**
-     * @Gedmo\Slug(fields={"name", "skuNumber"})
-     * @ORM\Column(type="string", length=255, unique=true)
-     */
+    #[ORM\Column(type: Types::STRING, unique: true)]
+    #[Gedmo\Slug(fields: ["name", "skuNumber"])]
     private string $slug;
 
-    /**
-     * @ORM\Column(type="string", length=255, unique=true)
-     */
+    #[ORM\Column(type: Types::STRING, unique: true)]
+    #[Assert\NotBlank()]
     private string $skuNumber;
 
-    /**
-     * @ORM\Column(type="json")
-     */
+    #[ORM\Column(type: Types::JSON)]
     private array $imagePaths;
 
     public function __construct()
@@ -89,20 +64,20 @@ class Product
         $this->tags = new ArrayCollection();
     }
 
-//    public static function create(ProductDto $productDto, ManagerRegistry $registry): self
-//    {
-//        $product              = new self();
-//        $product->name        = $productDto->name;
-//        $product->description = $productDto->description;
-//        $product->price       = $productDto->price;
-//        $product->stock       = [];
-//        $product->skuNumber   = $productDto->skuNumber;
-//        $product->imagePaths  = $productDto->imagePaths;
-//        $product->category    = (new CategoryRepository($registry))->find($productDto->categoryId);
-//        $product->discount    = (new DiscountRepository($registry))->find($productDto->discountId);
-//
-//        return $product;
-//    }
+    //    public static function create(ProductDto $productDto, ManagerRegistry $registry): self
+    //    {
+    //        $product              = new self();
+    //        $product->name        = $productDto->name;
+    //        $product->description = $productDto->description;
+    //        $product->price       = $productDto->price;
+    //        $product->stock       = [];
+    //        $product->skuNumber   = $productDto->skuNumber;
+    //        $product->imagePaths  = $productDto->imagePaths;
+    //        $product->category    = (new CategoryRepository($registry))->find($productDto->categoryId);
+    //        $product->discount    = (new DiscountRepository($registry))->find($productDto->discountId);
+    //
+    //        return $product;
+    //    }
 
     /**
      * @param Category $category

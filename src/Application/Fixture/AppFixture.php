@@ -6,6 +6,7 @@ use App\Domain\Entity\Category;
 use App\Domain\Entity\Discount;
 use App\Domain\Entity\Product;
 use App\Domain\Entity\Tag;
+use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Exception;
@@ -79,7 +80,8 @@ final class AppFixture extends Fixture
             $discount = new Discount();
             $discount->setName($this->faker->sentence());
             $discount->setDiscountPercent(random_int(10, 50));
-            $discount->setActiveTill($this->faker->dateTimeThisYear('1 month'));
+            $activeTill = DateTimeImmutable::createFromMutable($this->faker->dateTimeThisYear('1 month'));
+            $discount->setActiveTill($activeTill);
             $manager->persist($discount);
         }
 

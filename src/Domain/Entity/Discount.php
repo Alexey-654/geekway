@@ -3,39 +3,32 @@
 namespace App\Domain\Entity;
 
 use App\Infrastructure\Repository\DiscountRepository;
-use DateTime;
+use DateTimeImmutable;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass=DiscountRepository::class)
- * @ORM\Table(name="discount")
- */
+#[ORM\Entity(repositoryClass: DiscountRepository::class, readOnly: false)]
 class Discount
 {
     use TimestampableEntity;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER)]
     private int|null $id;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: Types::STRING, unique: true, nullable: true)]
+    #[Assert\NotBlank()]
+    #[Assert\Length(max: 255)]
     private string $name;
 
-    /**
-     * @ORM\Column(type="decimal", precision=5, scale=2)
-     */
+    #[ORM\Column(type: Types::DECIMAL, precision: 5, scale: 2)]
     private float $discountPercent;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private DateTime $activeTill;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private DateTimeImmutable $activeTill;
 
     public function getId(): ?int
     {
@@ -62,12 +55,12 @@ class Discount
         $this->discountPercent = $discountPercent;
     }
 
-    public function getActiveTill(): DateTime
+    public function getActiveTill(): DateTimeImmutable
     {
         return $this->activeTill;
     }
 
-    public function setActiveTill(DateTime $activeTill): void
+    public function setActiveTill(DateTimeImmutable $activeTill): void
     {
         $this->activeTill = $activeTill;
     }

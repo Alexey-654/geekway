@@ -12,20 +12,11 @@ final class CatalogController extends AbstractController
 {
     private ManagerRegistry $doctrine;
 
-    /**
-     * @param ManagerRegistry $doctrine
-     */
     public function __construct(ManagerRegistry $doctrine)
     {
         $this->doctrine = $doctrine;
     }
 
-    /**
-     * @param string $slug
-     * @param int $page
-     * @param string $_route
-     * @return Response
-     */
     #[Route('/catalog/{slug}/{page}', name: 'catalog_category_paginated', requirements: ['page' => '\d+'], defaults: ['page' => '1'])]
     public function showByCategory(string $slug, int $page, string $_route): Response
     {
@@ -38,12 +29,6 @@ final class CatalogController extends AbstractController
         ]);
     }
 
-    /**
-     * @param string $slug
-     * @param int $page
-     * @param string $_route
-     * @return Response
-     */
     #[Route('/catalog/tag/{slug}/{page}', name: 'catalog_tag_paginated', requirements: ['page' => '\d+'], defaults: ['page' => '1'])]
     public function showByTag(string $slug, int $page, string $_route): Response
     {
