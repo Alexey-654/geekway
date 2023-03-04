@@ -22,8 +22,11 @@ final class CatalogController extends AbstractController
     #[Route('/catalog/{slug}/{page}', name: 'catalog_category_paginated', requirements: ['page' => '\d+'], defaults: ['page' => '1'])]
     public function showByCategory(string $slug, int $page, string $_route): Response
     {
-        $products     = $this->doctrine->getRepository(Product::class)->findByCategorySlug($slug, $page);
-        $categoryName = $this->doctrine->getRepository(Category::class)->findOneBy(['slug' => $slug])->getName();
+        $categoryName = $this->doctrine->getRepository(Category::class)->findOneBy(['slug' => $slug])?->getName();
+        if (!$categoryName) {
+            throw $this->createNotFoundException('No category found for slug ' . $slug);
+        }
+        $products = $this->doctrine->getRepository(Product::class)->findByCategorySlug($slug, $page);
 
         return $this->render('catalog/index.html.twig', [
             'paginator' => $products,
@@ -36,7 +39,7 @@ final class CatalogController extends AbstractController
     #[Route('/catalog/tag/{slug}/{page}', name: 'catalog_tag_paginated', requirements: ['page' => '\d+'], defaults: ['page' => '1'])]
     public function showByTag(string $slug, int $page, string $_route): Response
     {
-        $products = $this->doctrine->getRepository(Product::class)->findByTag($page, $slug);
+        $products = $this->doctrine->getRepository(Product::class)->findByTagSlug($page, $slug);
         $tagName  = $this->doctrine->getRepository(Tag::class)->findOneBy(['slug' => $slug])->getName();
 
         return $this->render('catalog/index.html.twig', [

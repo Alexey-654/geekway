@@ -13,10 +13,9 @@ final class ProductController extends AbstractController
     #[Route('/product/{slug}', name: 'product_show')]
     public function show(ManagerRegistry $doctrine, string $slug): Response
     {
-        $product = $doctrine->getRepository(Product::class)->findOneBy(['slug' => $slug]);
-
+        $product = $doctrine->getRepository(Product::class)->findBySlug($slug);
         if (!$product) {
-            throw $this->createNotFoundException('No product found for name ' . $slug);
+            throw $this->createNotFoundException('No product found for slug ' . $slug);
         }
 
         return $this->render('product/show.html.twig', [

@@ -5,6 +5,7 @@ namespace App\Infrastructure\Repository;
 use App\Application\Pagination\Paginator;
 use App\Domain\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 
@@ -54,7 +55,7 @@ final class ProductRepository extends ServiceEntityRepository
      * @return Paginator
      * @throws Exception
      */
-    public function findByTag(int $page, string $tagSlug): Paginator
+    public function findByTagSlug(int $page, string $tagSlug): Paginator
     {
         $queryBuilder = $this->createQueryBuilder('p')
             ->addSelect('d')
@@ -64,6 +65,22 @@ final class ProductRepository extends ServiceEntityRepository
             ->setParameter('slug', $tagSlug);
 
         return (new Paginator($queryBuilder))->paginate($page);
+    }
+
+    /**
+     * @param string $slug
+     * @return Product|null
+     * @throws NonUniqueResultException
+     */
+    public function findBySlug(string $slug): ?Product
+    {
+        return $this->createQueryBuilder('p')
+            ->addSelect('d')
+            ->leftJoin('p.discount', 'd')
+            ->andWhere('p.slug = :slug')
+            ->setParameter('slug', $slug)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
 }

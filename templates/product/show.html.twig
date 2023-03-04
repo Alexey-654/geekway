@@ -43,13 +43,19 @@
                     <h1 class="fs-3"> {{ product.name }} </h1>
                 </div>
                 <div>
-                    цена: <span class="fs-4">{{ product.price }} ₽</span>
+                    цена:
+                    {% if product.hasDiscount %}
+                        <span class="text-muted fw-normal"><s>{{ product.price }}</s></span>
+                        <span class="text-danger">{{ product.getPriceWithDiscount|format_number(locale='ru') }} ₽</span>
+                    {% else %}
+                        {{ product.price|format_number(locale='ru') }} ₽
+                    {% endif %}
                 </div>
                 <div>
                     <select class="form-select form-select-sm fs-6" aria-label=".form-select-sm example">
                         <option selected disabled>Размер</option>
                         {% for size, stock in product.stock %}
-                        <option value="{{ stock }}">{{ size }}</option>
+                            <option value="{{ stock }}">{{ size }}</option>
                         {% endfor %}
                     </select>
                 </div>
