@@ -31,7 +31,7 @@ final class CategoryRepository extends ServiceEntityRepository
         $rsm->addEntityResult(Category::class, 'u');
         $rsm->addFieldResult('u', 'id', 'id');
         $sql = <<<SQL
-            WITH RECURSIVE cte AS(
+            WITH RECURSIVE cte AS (
                 select id from category where slug = :slug
                 UNION
                 select c.id from category c
@@ -43,5 +43,14 @@ final class CategoryRepository extends ServiceEntityRepository
         $query->setParameter('slug', $slug);
 
         return $query->getSingleColumnResult();
+    }
+
+    /**
+     * Finds all parent(base) categories
+     * @return Category[]
+     */
+    public function findAllParents(): array
+    {
+        return $this->createQueryBuilder('c')->where('c.parent is null')->getQuery()->getResult();
     }
 }

@@ -41,7 +41,7 @@ class Category
      * One Category has Many Categories.
      * @var Collection<int, Category>
      */
-    #[ORM\OneToMany(mappedBy: "parent", targetEntity: Category::class, )]
+    #[ORM\OneToMany(mappedBy: "parent", targetEntity: Category::class, fetch: "EAGER")]
     private Collection $children;
 
     public function __construct()

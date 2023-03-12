@@ -6,11 +6,20 @@
                 Категории
             </button>
             <div class="collapse show" id="cat-collapse" style="">
-                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-
-                    {% for category in categories.findAll() %}
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1">
+                    {% for category in categories.findAllParents() %}
                         <li>
                             <a class="link-dark rounded" href="/catalog/{{ category.slug }}">{{ category.name }}</a>
+                            {% set childrenCategories = category.getChildren() %}
+                            {% if childrenCategories|length > 0 %}
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 ps-3">
+                                    {% for childrenCategory in childrenCategories %}
+                                        <li><a class="link-dark rounded"
+                                               href="/catalog/{{ childrenCategory.slug }}">{{ childrenCategory.name }}</a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
                         </li>
                     {% endfor %}
                 </ul>
@@ -25,7 +34,7 @@
                 По интересам
             </button>
             <div class="collapse show" id="tag-collapse" style="">
-                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1">
                     {% for tag in tags.findAll() %}
                         <li>
                             <a class="link-dark rounded" href="/catalog/tag/{{ tag.slug }}">{{ tag.name }}</a>
